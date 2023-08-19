@@ -11,6 +11,7 @@ from scipy.optimize import lsq_linear  #method = 'trf' or 'bvls'
 import matplotlib.pyplot as plt
 from IPython.display import clear_output
 
+
 def get_levels(d_l,d_r, saxs = True) :
     """Function returning levelset."""
     if saxs :
@@ -47,14 +48,18 @@ def show_steps(title_l,data_l,title_r,data_r, sameaxs = True) :
         #input("Press Enter to continue...")
 
 def readFiles(mtxFile,rhsFile) :
+    """Function reading files."""
+    #nonlocal mtx, rhs
     mtx = np.load(mtxFile)
     assert mtx.ndim == 4, "Dimension of the input array inconsistent with the specification"
     rhs = np.loadtxt(rhsFile)
     #plt.plot(np.linspace(0, 10, 10), rhs, 'o', label='rhs')
     assert rhs.size == mtx.shape[0], "RHS size do not match"
-    #return (mtx,rhs)
+    return (mtx,rhs)
 
-def calculateAndDraw() :
+def calculateAndDraw(mtx,rhs) :
+    """Function doing the job."""
+    #nonlocal mtx, rhs
     mtx = mtx.reshape(mtx.shape, order = 'F')
     shape = mtx.shape # need it later for drawing
     mtx = np.swapaxes(mtx,0,2) # (x,y,d,s) -> (d,y,x,s)
@@ -72,7 +77,7 @@ def calculateAndDraw() :
         result = lsq_linear(mtx,rhs,
                             bounds=(0.0, +np.inf),
                             method = 'bvls')
-        x, y = result.x, result.unbounded_sol[0]            
+        x, y = result.x, result.unbounded_sol[0]
         x = x.reshape(shape[0],shape[1],shape[3])
         y = y.reshape(shape[0],shape[1],shape[3])
         x[0,:,:] = x[0,:,:] * (1.0 - r)
@@ -82,11 +87,13 @@ def calculateAndDraw() :
         show_steps(s,x,t,y, sameaxs = True)
 
 def runExample(mtxFileName,rhsFileName) :
-    nonlocal mtx, rhs
-    readFiles(mtxFileName,rhsFileName)
-    calculateAndDraw()
-    
+    """Function main."""
+    #nonlocal mtx, rhs
+    mtx, rhs = readFiles(mtxFileName,rhsFileName)
+    calculateAndDraw(mtx,rhs)
+
 def testRun() :
+    """Function test."""
     runExample("../../../Data/Anomaly/A.npy","../../../Data/Anomaly/n.csv")
 
 if __name__ == "__main__" :

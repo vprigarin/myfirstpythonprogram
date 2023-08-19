@@ -12,14 +12,14 @@ import matplotlib.pyplot as plt
 from IPython.display import clear_output
 
 class Arrays :
-   
+    """ class """
     def __init__(self,mtxFile,rhsFile) :
         self.mtx = np.load(mtxFile)
-        assert self.mtx.ndim == 4, "Dimension of the input array inconsistent with the specification"
+        assert self.mtx.ndim == 4,"Dimension of the input array inconsistent with the specification"
         self.rhs = np.loadtxt(rhsFile)
         assert self.rhs.size == self.mtx.shape[0], "RHS size do not match"
         #plt.plot(np.linspace(0, 10, 10), rhs, 'o', label='rhs')
-        
+
     def calculateAndDraw(self) :
         self.mtx = self.mtx.reshape(self.mtx.shape, order = 'F')
         shape = self.mtx.shape # need it later for drawing
@@ -33,13 +33,13 @@ class Arrays :
             for d in range(1,self.mtx.shape[0]) :
                 self.mtx[d,:] = mtx0[d,:] - r*mtx0[d-1,:]
                 self.rhs[d]   = rhs0[d] - r*rhs0[d-1]
-                
+
             self.mtx[0,:] = math.sqrt(1.0 - r*r) * mtx0[0,:]
             self.rhs[0]   = math.sqrt(1.0 - r*r) * rhs0[0]
             result = lsq_linear(self.mtx,self.rhs,
                                 bounds=(0.0, +np.inf),
                                 method = 'bvls')
-            x, y = result.x, result.unbounded_sol[0]            
+            x, y = result.x, result.unbounded_sol[0]
             x = x.reshape(shape[0],shape[1],shape[3])
             y = y.reshape(shape[0],shape[1],shape[3])
             x[0,:,:] = x[0,:,:] * (1.0 - r)
@@ -47,7 +47,7 @@ class Arrays :
             s = f"nonnegative solution, r={r:4.1f}"
             t = f"unconstrained, r={r:4.1f}"
             show_steps(s,x,t,y, sameaxs = True)
-        
+
 def get_levels(d_l,d_r, saxs = True) :
     """Function returning levelset."""
     if saxs :
@@ -86,7 +86,7 @@ def show_steps(title_l,data_l,title_r,data_r, sameaxs = True) :
 def runExample(mtxFileName,rhsFileName) :
     a = Arrays(mtxFileName,rhsFileName)
     a.calculateAndDraw()
-    
+
 def testRun() :
     runExample("../../../Data/Anomaly/A.npy","../../../Data/Anomaly/n.csv")
 
