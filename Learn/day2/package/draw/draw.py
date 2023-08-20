@@ -43,3 +43,25 @@ def show_steps(title_l,data_l,title_r,data_r, sameaxs = True) :
         fig.tight_layout()
         plt.show()
         #input("Press Enter to continue...")
+
+def show(title_l,data_l,title_r,data_r) :
+    """Function drawing result by first index."""
+    plt.style.use('_mpl-gallery-nogrid')
+    xp, yp = (np.meshgrid(np.linspace(0, data_l.shape[0], data_l.shape[0]),
+                          np.linspace(0, data_r.shape[1], data_r.shape[1])))
+    lx,ly = get_levels(data_l,data_r,False)
+    clear_output(wait=True)
+    fig, axs = plt.subplots(1, 2, figsize=(8, 5))
+    axs[0].set_title(title_l)
+    axs[1].set_title(title_r)
+    #axs[0].invert_yaxis()
+    #axs[1].invert_yaxis()
+    #cf  = axs[0].contourf(xp,yp,np.flip(data_l,1).T, levels=lx)
+    #cf1 = axs[1].contourf(xp,yp,np.flip(data_r,1).T, levels=ly)
+    cf  = axs[0].contourf(xp,yp,data_l, levels=lx)
+    cf1 = axs[1].contourf(xp,yp,data_r, levels=ly)
+    fig.colorbar(cf)
+    fig.colorbar(cf1)
+    fig.tight_layout()
+    plt.show()
+    #input("Press Enter to continue...")
