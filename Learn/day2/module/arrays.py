@@ -86,16 +86,3 @@ def calculateAndDraw(mtx,rhs) :
         t = f"unconstrained, r={r:4.1f}"
         show_steps(s,x,t,y, sameaxs = True)
 
-def runExample(mtxFileName,rhsFileName) :
-    """Function main."""
-    #nonlocal mtx, rhs
-    mtx, rhs = readFiles(mtxFileName,rhsFileName)
-    calculateAndDraw(mtx,rhs)
-
-def testRun() :
-    """Function test."""
-    runExample("../../../Data/Anomaly/A.npy","../../../Data/Anomaly/n.csv")
-
-if __name__ == "__main__" :
-    import sys
-    runExample(sys.argv[1],sys.argv[2])
